@@ -92,7 +92,7 @@ class KNearestNeighbor:
         num_test = X.shape[0]
         num_train = self.X_train.shape[0]
         dists = np.zeros((num_test, num_train))
-        for i in range(num_test): ...
+        for i in range(num_test):
             #######################################################################
             # TODO:                                                               #
             # Compute the l2 distance between the ith test point and all training #
@@ -100,7 +100,10 @@ class KNearestNeighbor:
             # Do not use np.linalg.norm().                                        #
             #######################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+            diff = self.X_train - X[i]
+            squared_diff = np.square(diff)
+            sum_squared_diff = np.sum(squared_diff, axis=1)
+            dists[i] = np.sqrt(sum_squared_diff)
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
 
@@ -128,7 +131,11 @@ class KNearestNeighbor:
         #       and two broadcast sums.                                         #
         #########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+        X_squared = np.sum(np.square(X), axis=1, keepdims=True)
+        X_train_squared = np.sum(np.square(self.X_train), axis=1)
+        X_X_train = np.dot(X, self.X_train.T)
+        # (x - y)^2 = x^2 - 2xy + y^2
+        dists = np.sqrt(X_squared + X_train_squared - 2 * X_X_train)
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
 
