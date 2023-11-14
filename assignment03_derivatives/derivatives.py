@@ -82,9 +82,9 @@ class LossAndDerivatives:
         Please mention, that in case `target_dimentionality` > 1 the error is averaged along this
         dimension as well, so you need to consider that fact in derivative implementation.
         """
-
-        # Calculate the error
-        return (2 * X.T.dot(X.dot(w) - Y)) / (Y.shape[0] * Y.shape[1])
+        if Y.ndim == 1:
+            return (2 * X.T.dot(X.dot(w) - Y)) / len(Y)
+        return (2 * X.T.dot(X.dot(w) - Y)) / (Y.shape[0] * Y.shape[-1])
 
     @staticmethod
     def mae_derivative(X, Y, w):
@@ -101,9 +101,13 @@ class LossAndDerivatives:
         Please mention, that in case `target_dimentionality` > 1 the error is averaged along this
         dimension as well, so you need to consider that fact in derivative implementation.
         """
-        error = (X.dot(w) - Y)
+        error = X.dot(w) - Y
         sign = np.sign(error)
-        return X.T.dot(sign) / (Y.shape[0] * Y.shape[1])
+
+        if Y.ndim == 1:
+            return X.T.dot(sign) / len(Y)
+        else:
+            return X.T.dot(sign) / (Y.shape[0] * Y.shape[-1])
 
     @staticmethod
     def l2_reg_derivative(w):
